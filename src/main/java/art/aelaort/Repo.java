@@ -18,6 +18,13 @@ public class Repo {
 	private final DSLContext db;
 	private final Tasks t = Tables.TASKS;
 
+	public Set<Task> getArchiveTasks() {
+		return db.select(t.ID, t.CONTENT)
+				.from(t)
+				.where(t.IS_DELETED.eq(true))
+				.fetchSet(mapping(Task::new));
+	}
+
 	@Cacheable("tasks")
 	public Set<Task> getTasks() {
 		return db.select(t.ID, t.CONTENT)

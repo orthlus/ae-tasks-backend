@@ -20,6 +20,12 @@ public class Controller {
 		return repo.getTasks();
 	}
 
+	@GetMapping("archive")
+	public Set<Task> getArchiveTasks() {
+		return repo.getArchiveTasks();
+	}
+
+
 	@PostMapping("tasks")
 	public Long addTask(@RequestBody NewTask content) {
 		return repo.addTask(content.content());
