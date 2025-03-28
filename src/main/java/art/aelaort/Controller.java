@@ -25,13 +25,13 @@ public class Controller {
 		return repo.addTask(content.content());
 	}
 
-	@DeleteMapping("tasks")
-	public void deleteTask(@RequestParam long taskId) {
+	@DeleteMapping("tasks/{taskId}")
+	public void deleteTask(@PathVariable long taskId) {
 		repo.markTaskAsDeleted(taskId);
 	}
 
-	@DeleteMapping("archive")
-	public void deleteArchiveTask(@RequestParam long taskId) {
+	@DeleteMapping("archive/{taskId}")
+	public void deleteArchiveTask(@PathVariable long taskId) {
 		repo.deleteTaskFromArchive(taskId);
 	}
 }
