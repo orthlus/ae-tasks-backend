@@ -21,7 +21,7 @@ public class Repo {
 	private final ArchiveTasks at = Tables.ARCHIVE_TASKS;
 
 	public Set<Task> getArchiveTasks() {
-		return db.select(t.ID, t.CONTENT)
+		return db.select(at.ID, at.CONTENT)
 				.from(at)
 				.fetchSet(mapping(Task::new));
 	}
