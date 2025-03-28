@@ -1,6 +1,7 @@
 package art.aelaort;
 
 import art.aelaort.dto.Task;
+import art.aelaort.tables.ArchiveTasks;
 import art.aelaort.tables.Tasks;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -17,11 +18,11 @@ import static org.jooq.Records.mapping;
 public class Repo {
 	private final DSLContext db;
 	private final Tasks t = Tables.TASKS;
+	private final ArchiveTasks at = Tables.ARCHIVE_TASKS;
 
 	public Set<Task> getArchiveTasks() {
 		return db.select(t.ID, t.CONTENT)
-				.from(t)
-				.where(t.IS_DELETED.eq(true))
+				.from(at)
 				.fetchSet(mapping(Task::new));
 	}
 
@@ -29,7 +30,6 @@ public class Repo {
 	public Set<Task> getTasks() {
 		return db.select(t.ID, t.CONTENT)
 				.from(t)
-				.where(t.IS_DELETED.eq(false))
 				.fetchSet(mapping(Task::new));
 	}
 
@@ -43,15 +43,23 @@ public class Repo {
 	}
 
 	@CacheEvict(value = "tasks", allEntries = true)
-	public void markTaskAsDeleted(long taskId) {
-		db.update(t)
-				.set(t.IS_DELETED, true)
+	public void moveToArchive(long taskId) {
+		db.transaction(c -> {
+			DSLContext dsl = c.dsl();
+			dsl.insertInto(at)
+					.select(dsl.selectFrom(t).where(t.ID.eq(taskId)))
+					.execute();
+			dsl.delete(t).where(t.ID.eq(taskId)).execute();
+		});
+	}
+
+	public void deleteTaskFromArchive(long taskId) {
+		db.delete(at)
 				.where(t.ID.eq(taskId))
 				.execute();
 	}
 
-	@CacheEvict(value = "tasks", allEntries = true)
-	public void deleteTaskFromArchive(long taskId) {
-		db.delete(t).where(t.ID.eq(taskId)).execute();
+	public void deleteAllArchiveTasks() {
+		db.delete(at).execute();
 	}
 }

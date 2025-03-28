@@ -33,11 +33,16 @@ public class Controller {
 
 	@DeleteMapping("tasks/{taskId}")
 	public void deleteTask(@PathVariable long taskId) {
-		repo.markTaskAsDeleted(taskId);
+		repo.moveToArchive(taskId);
 	}
 
 	@DeleteMapping("archive/{taskId}")
 	public void deleteArchiveTask(@PathVariable long taskId) {
 		repo.deleteTaskFromArchive(taskId);
+	}
+
+	@DeleteMapping("archive")
+	public void deleteAllArchiveTasks() {
+		repo.deleteAllArchiveTasks();
 	}
 }
