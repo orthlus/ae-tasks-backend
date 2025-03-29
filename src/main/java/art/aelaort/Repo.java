@@ -55,7 +55,7 @@ public class Repo {
 
 	public void deleteTaskFromArchive(long taskId) {
 		db.delete(at)
-				.where(t.ID.eq(taskId))
+				.where(at.ID.eq(taskId))
 				.execute();
 	}
 
