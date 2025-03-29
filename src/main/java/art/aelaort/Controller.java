@@ -15,6 +15,10 @@ import java.util.Set;
 public class Controller {
 	private final Repo repo;
 
+	@GetMapping("login")
+	public void login() {
+	}
+
 	@GetMapping("tasks")
 	public Set<Task> getTasks() {
 		return repo.getTasks();
