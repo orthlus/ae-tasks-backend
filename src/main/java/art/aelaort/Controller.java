@@ -35,6 +35,11 @@ public class Controller {
 		return repo.addTask(content.content());
 	}
 
+	@PatchMapping("tasks/{taskId}")
+	public void appendTask(@RequestBody NewTask content, @PathVariable Long taskId) {
+		repo.appendTask(taskId, content.content());
+	}
+
 	@DeleteMapping("tasks/{taskId}")
 	public void deleteTask(@PathVariable long taskId) {
 		repo.moveToArchive(taskId);

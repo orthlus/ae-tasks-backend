@@ -43,6 +43,20 @@ public class Repo {
 	}
 
 	@CacheEvict(value = "tasks", allEntries = true)
+	public void appendTask(long id, String content) {
+		String oldContent = db.select(t.ID, t.CONTENT)
+				.from(t)
+				.where(t.ID.eq(id))
+				.fetchOne(mapping(Task::new)).content();
+		String newContent = oldContent + "\n" + content;
+
+		db.update(t)
+				.set(t.CONTENT, newContent)
+				.where(t.ID.eq(id))
+				.execute();
+	}
+
+	@CacheEvict(value = "tasks", allEntries = true)
 	public void moveToArchive(long taskId) {
 		db.transaction(c -> {
 			DSLContext dsl = c.dsl();
