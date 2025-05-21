@@ -72,8 +72,4 @@ public class Repo {
 				.where(at.ID.eq(taskId))
 				.execute();
 	}
-
-	public void deleteAllArchiveTasks() {
-		db.delete(at).execute();
-	}
 }
